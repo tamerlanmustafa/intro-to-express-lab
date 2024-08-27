@@ -1,5 +1,7 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+app.use(morgan('devc'))
 
 // EXERCISE 1
 app.get('/greetings/:username', (req, res) => {
@@ -21,9 +23,6 @@ app.get('/roll/:number', (req, res) => {
 
 //EXERCISE 3
 
-// Validation: If the index does not correspond to an item in the array, respond with “This item is not yet in stock. Check back soon!”
-
-// Response: Should describe the item at the given index, like “So, you want the shiny ball? For 5.95, it can be yours!” Include both the name and price properties.
 const collectibles = [
     { name: 'shiny ball', price: 5.95 },
     { name: 'autographed picture of a dog', price: 10 },
@@ -40,9 +39,36 @@ app.get('/collectibles/:index', (req, res) => {
     }
 })
 
+// EXERCISE 4
 
+const shoes = [
+    { name: "Birkenstocks", price: 50, type: "sandal" },
+    { name: "Air Jordans", price: 500, type: "sneaker" },
+    { name: "Air Mahomeses", price: 501, type: "sneaker" },
+    { name: "Utility Boots", price: 20, type: "boot" },
+    { name: "Velcro Sandals", price: 15, type: "sandal" },
+    { name: "Jet Boots", price: 1000, type: "boot" },
+    { name: "Fifty-Inch Heels", price: 175, type: "heel" }
+];
 
+app.get('/shoes', (req, res) => {
+    let min_price = req.query['min-price'];
+    let max_price = req.query['max-price'];
+    let type = req.query['type'];
 
-app.listen(3000, () => {
-    console.log("server is up")
+    let filteredShoes = shoes;
+    if (min_price) {
+      filteredShoes = filteredShoes.filter(shoe => shoe.price >= Number(min_price));
+    }
+    if (max_price) {
+      filteredShoes = filteredShoes.filter(shoe => shoe.price <= Number(max_price));
+    }
+    if (type) {
+      filteredShoes = filteredShoes.filter(shoe => shoe.type === type);
+    }
+    res.json(filteredShoes);
+  });
+
+app.listen(3030, () => {
+    console.log("server is up") 
 })
